@@ -1,14 +1,12 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\productController;
-use App\Http\Controllers\FluentController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Route;
+use App\http\Livewire\HomeComponent;
+use App\http\Livewire\ShopComponent;
+use App\http\Livewire\CartComponent;
+use App\http\Livewire\CheckoutComponent;
+use App\http\Livewire\user\UserDashboardComponent;
+use App\http\Livewire\admin\AdminDashboardComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,54 +19,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [productController::class,'index'])->name('product.index');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/homes/{name?}',[HomeController::class,'index'])->name('home.index');
+Route::get('/',HomeComponent::class);
 
-Route::get('/user',[userController::class,'index'])->name('user.index');
+Route::get('/shop',ShopComponent::Class);
 
-Route::get('/posts',[ClientController::class,'getAllPost'])->name('post.getallpost');
+Route::get('/cart',CartComponent::Class);
 
-Route::get('/posts/{id}',[ClientController::class,'postById'])->name('post.postbyid');
+Route::get('/checkout',CheckoutComponent::Class);
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
 
-Route::get('/add-post',[ClientController::class,'addPost'])->name('post.addpost');
+//route for normal or customer user
+Route::middleware(['auth:sanctum','verified'])->group(function(){
+    Route::get('/user/dashboard',UserDashboardComponent::class)->name('user.dashboard');
+});
 
-Route::get('/create-post',[ClientController::class,'updatePost'])->name('post.createpost');
-
-Route::get('/delete-post/{id}',[ClientController::class,'deletePost'])->name('post.createpost');
-
-Route::get('/fluent-string',[FluentController::class,'index'])->name('fluentstring.index');
-
-Route::get('/login',[LoginController::class,'index'])->name('login.index')->middleware('checkuser');
-
-Route::post('/Login',[LoginController::class,'loginSubmit'])->name('login.submit');
-
-Route::get('/session/get',[SessionController::class,'getSessionData'])->name('session.get');
-
-Route::get('/session/set',[SessionController::class,'storedSessionData'])->name('session.stored');
-
-Route::get('/session/delete',[SessionController::class,'deleteSessionData'])->name('session.delete');
-
-Route::get('/posts',[PostController::class,'getAllPosts'])->name('post.getallpost');
-
-Route::get('/add-posts',[PostController::class,'addPost'])->name('post.addpost');
-
-Route::post('/add-posts',[PostController::class,'addPostSubmit'])->name('post.addsubmit');
-
-Route::get('/posts/{id}',[PostController::class,'getPostById'])->name('post.getpostbyid');
-
-Route::get('/delete-post/{id}',[PostController::class,'deletePost'])->name('post.deletepostbyid');
-
-Route::get('/edit-post/{id}',[PostController::class,'editPost'])->name('post.editpost');
-
-Route::post('/update-post',[PostController::class,'updatePost'])->name('post.updatepost');
-
-Route::get('/inner-join',[PostController::class,'innerJoinClause'])->name('post.innerjoinclause');
-
-Route::get('/left-join',[PostController::class,'leftjoinClause'])->name('post.leftjoinclause');
-
-Route::get('/right-join',[PostController::class,'rightjoinClause'])->name('post.rightjoinclause');
-
-Route::get('/all-post',[PostController::class,'getAllPostUsingModel'])->name('post.getallpostusingmodel'); 
-
-
+//route for admin
+Route::middleware(['auth:sanctum','verified'])->group(function(){
+    Route::get('/admin/dashboard',AdminDashboardComponent::class)->name('admin.dashboard');
+});
